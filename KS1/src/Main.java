@@ -24,18 +24,16 @@ public class Main {
     static void main(String[] args) {
 
         Persons persons = generateRandomPersons();
+        System.out.println("===========UNSORTED ARRAY===========");
         System.out.println(persons);
 
         System.out.println("===========INSERTION SORT O(nˆ2) - SORT BY AGE===========");
         persons.sortByAge();
         System.out.println(persons);
 
-        Persons persons2 = generateRandomPersons();
-        System.out.println(persons);
-
         System.out.println("===========MERGE SORT O(n*log(n)) - SORT BY HEIGHT===========");
-//        persons2.sortByHeight();
-        System.out.println(persons2);
+        persons.sortByHeight(0, persons.getPersons().length - 1);
+        System.out.println(persons);
 
         System.out.println("===========BIN SEARCH O(n*log(n)) - FIND BY NAME===========");
 
