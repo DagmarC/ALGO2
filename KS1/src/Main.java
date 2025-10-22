@@ -21,22 +21,24 @@ public class Main {
 
 
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
 
         Persons persons = generateRandomPersons();
         System.out.println("===========UNSORTED ARRAY===========");
         System.out.println(persons);
 
+
         System.out.println("===========INSERTION SORT O(nˆ2) - SORT BY AGE===========");
         persons.sortByAge();
         System.out.println(persons);
+
 
         System.out.println("===========MERGE SORT O(n*log(n)) - SORT BY HEIGHT===========");
         persons.sortByHeight(0, persons.getPersons().length - 1);
         System.out.println(persons);
 
-        System.out.println("===========BIN SEARCH O(n*log(n)) - FIND BY NAME - SORTED ARRAY===========");
 
+        System.out.println("===========BIN SEARCH O(n*log(n)) - FIND BY NAME - SORTED ARRAY===========");
         // Test on already sorted array
         Persons sortedPersons = generateRandomPersonsSorted();
         System.out.println("sortedPersons: \n" + sortedPersons);
@@ -50,8 +52,8 @@ public class Main {
         Person result3 = sortedPersons.findPerson("Teo");
         printResult(result3, "NULL");
 
-        System.out.println("\n===========BIN SEARCH O(n*log(n)) - FIND BY NAME - UNSORTED ARRAY===========");
 
+        System.out.println("\n===========BIN SEARCH O(n*log(n)) - FIND BY NAME - UNSORTED ARRAY===========");
 //        // Test non-existing name (neither Jozko nor Mrkvicka in the pseudo random space)
         String searchQuery1 = "Jozko Mrkvicka";
         Person noMatch = persons.findPerson(searchQuery1);
@@ -61,6 +63,7 @@ public class Main {
         String searchQuery2 = persons.getPersons()[10].getName();
         Person match = persons.findPerson(searchQuery2);
         printResult(match, searchQuery2);
+
 
         System.out.println("\n===========SORT BY NAME RESULT===========");
         System.out.println(persons);
