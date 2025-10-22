@@ -35,51 +35,51 @@ public class Main {
         persons.sortByHeight(0, persons.getPersons().length - 1);
         System.out.println(persons);
 
-        System.out.println("===========BIN SEARCH O(n*log(n)) - FIND BY NAME===========");
+        System.out.println("===========BIN SEARCH O(n*log(n)) - FIND BY NAME - SORTED ARRAY===========");
 
         // Test on already sorted array
         Persons sortedPersons = generateRandomPersonsSorted();
+        System.out.println("sortedPersons: \n" + sortedPersons);
 
         Person result1 = sortedPersons.findPerson("Bea");
-        assert result1 != null;
-        System.out.printf("Person %s was found.%n", result1);
+        printResult(result1, "Bea");
 
         Person result2 = sortedPersons.findPerson("Conrad");
-        assert result2 != null;
-        System.out.printf("Person %s was found.%n", result2);
+        printResult(result2, "Conrad");
 
-        String name1 = "Teo";
-        Person result3 = sortedPersons.findPerson(name1);
-        assert result3 == null;
-        System.out.printf("Person %s was not found.\n", name1);
+        Person result3 = sortedPersons.findPerson("Teo");
+        printResult(result3, "NULL");
 
-        // Test on randomly generated array
+        System.out.println("\n===========BIN SEARCH O(n*log(n)) - FIND BY NAME - UNSORTED ARRAY===========");
 
-        // Test non-existing name (neither Jozko nor Mrkvicka in the pseudo random space)
+//        // Test non-existing name (neither Jozko nor Mrkvicka in the pseudo random space)
         String searchQuery1 = "Jozko Mrkvicka";
         Person noMatch = persons.findPerson(searchQuery1);
-        assert noMatch == null;
-        System.out.printf("Person %s was not found.\n", searchQuery1);
-
-        // Test if existing person is found
+        printResult(noMatch, "NULL");
+//
+//        // Test if existing person is found
         String searchQuery2 = persons.getPersons()[10].getName();
         Person match = persons.findPerson(searchQuery2);
-        assert match != null;
-        System.out.printf("Person %s was found. Person matched: %s %n", searchQuery2, match);
+        printResult(match, searchQuery2);
 
-
+        System.out.println("\n===========SORT BY NAME RESULT===========");
+        System.out.println(persons);
 
     }
 
-    public static Persons generateRandomPersons() {
-//        int ageUpperBoundary = 99;
-//        int heightUpperBoundary = 198;
-//        int heightLowerBoundary = 10;
+    private static void printResult(Person result, String expectedResult) {
+        if (result == null) {
+            System.out.println("No results found ----> expected: " + expectedResult );
+        } else {
+            System.out.printf("Person %s should BE FOUND. Expected: %s.\n", expectedResult, result);
+        }
+    }
 
+    public static Persons generateRandomPersons() {
         Random rand = new Random();
         Persons persons = new Persons(PERSON_LEN);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < PERSON_LEN; i++) {
             // Init random variables for person
             int age = rand.nextInt(AGE_UPPER_BOUNDARY) + 1;
             int height = rand.nextInt(HEIGHT_UPPER_BOUNDARY - HEIGHT_LOWER_BOUNDARY) + HEIGHT_LOWER_BOUNDARY;

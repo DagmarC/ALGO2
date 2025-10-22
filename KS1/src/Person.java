@@ -21,7 +21,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return String.format("Name: %-20s Height: %-10.2f Age: %-5d", name, height, age);
+        return String.format("{Name: %s, Height: %.2f, Age: %d}", name, height, age);
     }
 
     public double getHeight() {

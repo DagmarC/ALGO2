@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.*;
 
 public class Persons {
     private Person[] persons;
@@ -20,8 +20,8 @@ public class Persons {
      * @param idx is the index of the array, where person should be inserted
      * @throws IllegalArgumentException  if the idx is out of range
      * */
-    public void addPerson(Person person, int idx) throws IllegalArgumentException {
-        if (idx < 0 || idx > persons.length) {
+    public void addPerson(Person person, int idx) {
+        if (idx < 0 || idx >= this.persons.length) {
             throw new IllegalArgumentException("Index out of range");
         }
         persons[idx] = person;
@@ -127,7 +127,86 @@ public class Persons {
      * Sorts the array of Person objects by name. Internally it uses Radix sort.
      * **/
     public void sortByName() {
-        // @TODO
+        // Fill in the frequency table with unique characters and get the largest string
+        int maxLength = getLongestName(persons);
+
+        // Make all names equally large (with maxLength ), place empty spaces " " in front
+        String[] paddedNames = padNames(persons, maxLength);
+
+        // Sort from right to left
+        for (int i = maxLength - 1; i >= 0; i--) {
+            countingSortPerPosition(paddedNames, persons, i);
+        }
+        // Clean
+    }
+
+    private void countingSortPerPosition(String[] paddedNames, Person[] persons, int position) {
+
+        Person[] sortedPersons = new Person[persons.length];
+        String[] sortedNames = new String[persons.length];
+
+        int maxKey = Integer.MIN_VALUE;
+        int minKey = Integer.MAX_VALUE;
+
+        // Get min and max key at given position
+        for (String name : paddedNames) {
+            char c = name.charAt(position);
+            minKey = Math.min(minKey, c);
+            maxKey = Math.max(maxKey, c);
+        }
+
+        // count number of occurrences of character at given position
+        // count[0] = X stands for: idx = Character c - minKey = 0 and counts[idx] = number of occurrences of min key (0)
+        int[] counts = new int[maxKey - minKey + 1];
+
+        for (String name : paddedNames) {
+            char c = name.charAt(position);
+            int idx = c - minKey; // Start from the lowest character at 0 position
+            counts[idx]++;
+        }
+        // convert to cumulative count
+        for (int i = 1; i < counts.length; i++) {
+            counts[i] += counts[i - 1];
+        }
+
+        // Add person at correct position according to counts array
+        for (int i = paddedNames.length - 1; i >= 0; i--) {
+            int letterIdx = paddedNames[i].charAt(position) - minKey;
+            int personIdx = counts[letterIdx] - 1;
+
+            sortedPersons[personIdx] = persons[i];
+            sortedNames[personIdx] = paddedNames[i];
+
+            // decrement the position in counts arr of given letter that will be located in the output array
+            counts[letterIdx]--;
+        }
+        // Copy back to the original array
+        System.arraycopy(sortedPersons, 0, persons, 0, persons.length);
+        System.arraycopy(sortedNames, 0, paddedNames, 0, paddedNames.length);
+    }
+
+    private int getLongestName(Person[] persons) {
+        int maxLength = 0;
+        // Fill in the frequency table and get the max length of the name
+        for (Person person : persons) {
+            int nameLength = person.getName().length();
+            maxLength = Math.max(maxLength, nameLength);
+        }
+        return maxLength;
+    }
+
+    private String[] padNames(Person[] persons, int maxLength) {
+        String[] paddedNames = new String[persons.length];
+
+        for (int i =0; i < paddedNames.length; i++) {
+            int nameLength = persons[i].getName().length();
+
+            int padding = maxLength - nameLength;
+            String newName = persons[i].getName() + " ".repeat(padding);
+            paddedNames[i] = newName;
+
+        }
+        return paddedNames;
     }
 
     /**
@@ -136,10 +215,12 @@ public class Persons {
      * @throws NullPointerException if the name was not found
      * */
     public Person findPerson(String name) throws NullPointerException {
-        if (persons.length == 0) {
+        System.out.println("\n=======Finding person: " + name + "=======");
+        if (this.persons.length == 0) {
             return null;
         }
         sortByName();
+
         return findPersonByName(name, 0, persons.length - 1);
     }
 
@@ -151,11 +232,12 @@ public class Persons {
 
         // divide the array into 2 halves
         int mid = (left + right) / 2;
-        if (name.equals(persons[mid].getName())) {
-            return persons[mid];
+
+        if (name.equalsIgnoreCase(this.persons[mid].getName())) {
+            return this.persons[mid];
         }
         // decide with which half of the array the binary search will continue
-        if (name.compareToIgnoreCase(persons[mid].getName()) < 0) {
+        if (name.compareToIgnoreCase(this.persons[mid].getName()) < 0) {
             // name is less than the mid-name -> go left
             return findPersonByName(name, left, mid - 1);
         }
@@ -166,11 +248,13 @@ public class Persons {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Person person : persons) {
-            sb.append(person.toString());
-            sb.append("\n");
+        for (Person person : this.persons) {
+            sb.append(
+                    String.format(
+                            "Name: %-15s Height: %-10.2f Age: %-5d\n",
+                            person.getName(), person.getHeight(), person.getAge()
+                    ));
         }
         return sb.toString();
     }
-
 }
